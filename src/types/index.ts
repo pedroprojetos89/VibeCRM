@@ -12,7 +12,26 @@ export interface Customer {
   name: string;
   phone: string;
   email?: string;
+  document?: string;
+  ltv?: number;
   created_at: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  checkout_links: string[];
+}
+
+export interface Seller {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  active_since: string;
+  last_activity: string;
 }
 
 export interface AbandonedCart {
@@ -34,8 +53,10 @@ export interface AbandonedCart {
 export interface Order {
   id: string;
   customer_id: string;
+  customer?: Customer;
   product_name: string;
   value: number;
+  net_value?: number;
   recovered: boolean;
   abandoned_cart_id?: string;
   ordered_at: string;

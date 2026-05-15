@@ -1,11 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Settings, Zap } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Settings, Zap, Receipt, Users, Package, BadgeCheck } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, route: '/' },
+  { label: 'Vendas', icon: Receipt, route: '/sales' },
   { label: 'Recuperação', icon: ShoppingCart, route: '/recovery' },
+  { label: 'Clientes', icon: Users, route: '/customers' },
+  { label: 'Produtos', icon: Package, route: '/products' },
+  { label: 'Vendedores', icon: BadgeCheck, route: '/sellers' },
   { label: 'Configurações', icon: Settings, route: '/settings' },
 ];
 

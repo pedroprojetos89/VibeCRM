@@ -4,6 +4,10 @@ import Sidebar from './components/layout/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Recovery from './pages/Recovery';
 import Settings from './pages/Settings';
+import Sales from './pages/Sales';
+import Customers from './pages/Customers';
+import Products from './pages/Products';
+import Sellers from './pages/Sellers';
 
 function Layout() {
   return (
@@ -22,7 +26,11 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/sales" element={<Sales />} />
           <Route path="/recovery" element={<Recovery />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/sellers" element={<Sellers />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>

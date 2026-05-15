@@ -1,6 +1,8 @@
 import { subDays, startOfDay, format, isSameDay } from 'date-fns';
 import { 
   Customer, 
+  Product,
+  Seller,
   AbandonedCart, 
   Order, 
   MessageTemplate, 
@@ -13,18 +15,23 @@ import {
 const generateId = () => Math.random().toString(36).substring(2, 9);
 
 // 1. Customers
-export const mockCustomers: Customer[] = Array.from({ length: 20 }).map((_, i) => ({
-  id: `cust-${i}`,
-  name: [
-    'João Silva', 'Maria Oliveira', 'Pedro Santos', 'Ana Costa', 'Lucas Pereira',
-    'Julia Rodrigues', 'Gabriel Almeida', 'Beatriz Carvalho', 'Mateus Ferreira', 'Carla Souza',
-    'Bruno Gomes', 'Camila Santos', 'Felipe Lima', 'Larissa Duarte', 'Thiago Rocha',
-    'Fernanda Castro', 'Diego Neves', 'Priscila Mendes', 'Vitor Barbosa', 'Isabela Viana'
-  ][i],
-  phone: `55119${Math.floor(10000000 + Math.random() * 90000000)}`,
-  email: `cliente${i}@exemplo.com.br`,
-  created_at: subDays(new Date(), Math.floor(Math.random() * 60)).toISOString(),
-}));
+export const mockCustomers: Customer[] = Array.from({ length: 20 }).map((_, i) => {
+  const ltv = 97 + Math.floor(Math.random() * 2000);
+  return {
+    id: `cust-${i}`,
+    name: [
+      'João Silva', 'Maria Oliveira', 'Pedro Santos', 'Ana Costa', 'Lucas Pereira',
+      'Julia Rodrigues', 'Gabriel Almeida', 'Beatriz Carvalho', 'Mateus Ferreira', 'Carla Souza',
+      'Bruno Gomes', 'Camila Santos', 'Felipe Lima', 'Larissa Duarte', 'Thiago Rocha',
+      'Fernanda Castro', 'Diego Neves', 'Priscila Mendes', 'Vitor Barbosa', 'Isabela Viana'
+    ][i],
+    phone: `55119${Math.floor(10000000 + Math.random() * 90000000)}`,
+    email: `cliente${i}@exemplo.com.br`,
+    document: `${Math.floor(10000000000 + Math.random() * 90000000000)}`,
+    ltv,
+    created_at: subDays(new Date(), Math.floor(Math.random() * 60)).toISOString(),
+  };
+});
 
 // 2. Message Templates
 export const mockTemplates: MessageTemplate[] = [
@@ -62,7 +69,74 @@ export const mockTemplates: MessageTemplate[] = [
   }
 ];
 
-// 3. Abandoned Carts
+// 3. Products
+export const mockProducts: Product[] = [
+  {
+    id: 'prod-1',
+    name: 'Curso Reels Pro',
+    price: 197.00,
+    description: 'Aprenda a viralizar no Instagram com Reels que engajam e vendem.',
+    checkout_links: ['https://pay.example.com/c/1', 'https://pay.example.com/c/2']
+  },
+  {
+    id: 'prod-2',
+    name: 'E-book Dieta Low Carb',
+    price: 47.90,
+    description: 'Guia completo com receitas e plano alimentar de 30 dias para low carb.',
+    checkout_links: ['https://pay.example.com/c/3']
+  },
+  {
+    id: 'prod-3',
+    name: 'Mentoria de Vendas XP',
+    price: 997.00,
+    description: 'Acompanhamento de 3 meses para escalar as vendas do seu negócio físico.',
+    checkout_links: ['https://pay.example.com/c/4', 'https://pay.example.com/c/5', 'https://pay.example.com/c/6']
+  },
+  {
+    id: 'prod-4',
+    name: 'Pack de Templates Canva',
+    price: 29.90,
+    description: 'Mais de 100 templates editáveis para redes sociais de estética.',
+    checkout_links: ['https://pay.example.com/c/7']
+  },
+  {
+    id: 'prod-5',
+    name: 'Imersão Tráfego Pago',
+    price: 497.00,
+    description: 'Evento de final de semana focado em dominar o Meta Ads.',
+    checkout_links: []
+  }
+];
+
+// 4. Sellers
+export const mockSellers: Seller[] = [
+  {
+    id: 'seller-1',
+    name: 'Ricardo Mendes',
+    email: 'ricardo@vibecrm.com.br',
+    phone: '5511988887777',
+    active_since: subDays(new Date(), 120).toISOString(),
+    last_activity: subDays(new Date(), 0.1).toISOString(),
+  },
+  {
+    id: 'seller-2',
+    name: 'Ana Cláudia',
+    email: 'ana@vibecrm.com.br',
+    phone: '5511977776666',
+    active_since: subDays(new Date(), 80).toISOString(),
+    last_activity: subDays(new Date(), 1).toISOString(),
+  },
+  {
+    id: 'seller-3',
+    name: 'Marcos Silva',
+    email: 'marcos@vibecrm.com.br',
+    phone: '5511966665555',
+    active_since: subDays(new Date(), 20).toISOString(),
+    last_activity: subDays(new Date(), 0.5).toISOString(),
+  }
+];
+
+// 5. Abandoned Carts
 const products = [
   'Curso Reels Pro', 'E-book Dieta Low Carb', 'Mentoria de Vendas XP', 
   'Pack de Templates Canva', 'Imersão Tráfego Pago'
@@ -88,24 +162,28 @@ export const mockAbandonedCarts: AbandonedCart[] = Array.from({ length: 30 }).ma
   };
 });
 
-// 4. Orders
+// 6. Orders
 export const mockOrders: Order[] = Array.from({ length: 15 }).map((_, i) => {
   const customer = mockCustomers[Math.floor(Math.random() * mockCustomers.length)];
   const isRecovered = i < 3;
   const abandonedCart = isRecovered ? mockAbandonedCarts.find(c => c.status === 'recovered') : undefined;
+  const value = 97 + Math.floor(Math.random() * 900);
+  const net_value = value * 0.9;
 
   return {
     id: `order-${i}`,
     customer_id: customer.id,
-    product_name: products[Math.floor(Math.random() * products.length)],
-    value: 97 + Math.floor(Math.random() * 900),
+    customer,
+    product_name: mockProducts[Math.floor(Math.random() * mockProducts.length)].name,
+    value,
+    net_value,
     recovered: isRecovered,
     abandoned_cart_id: abandonedCart?.id,
     ordered_at: subDays(new Date(), Math.random() * 30).toISOString(),
   };
 });
 
-// 5. Activity Log
+// 7. Activity Log
 export const mockActivityLog: ActivityLogEntry[] = Array.from({ length: 10 }).map((_, i) => {
   const types: any[] = ['cart_abandoned', 'message_sent', 'cart_recovered', 'followup_scheduled', 'order_placed'];
   const type = types[Math.floor(Math.random() * types.length)];

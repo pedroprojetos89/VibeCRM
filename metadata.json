@@ -1,0 +1,6 @@
+{
+  "name": "VibeCRM",
+  "description": "CRM de recuperação de vendas com foco em monitoramento de abandono de carrinho e reconversão via WhatsApp",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
